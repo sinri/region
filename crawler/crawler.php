@@ -99,8 +99,8 @@ while (count($queue) > 0) {
 //            'region_type'=>$elementType,
 //        ];
         confirmRegionItem($elementCode, $item['code'], $elementName, $elementType, $elementAddress);
-        echo "done" . PHP_EOL;
     }
+    echo "done" . PHP_EOL;
 }
 
 //foreach ($dict as $code => $item){
