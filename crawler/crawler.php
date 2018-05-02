@@ -103,7 +103,7 @@ while (count($queue) > 0) {
         }
         echo "done" . PHP_EOL;
     } else {
-        echo "failed" . PHP_EOL;
+        echo "failed for URL: " . $item['url'] . PHP_EOL;
     }
 }
 
