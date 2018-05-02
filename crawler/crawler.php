@@ -7,10 +7,14 @@
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+date_default_timezone_set('Asia/Shanghai');
 
 //$x=parseNextLevelElementsInPage('http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/65/42/26/654226100.html');
 //print_r($x);
 //die();
+
+$file = __DIR__ . '/../log/region.sql';
+if (file_exists($file)) unlink($file);
 
 // Provinces
 $baseUrl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/";
@@ -61,6 +65,9 @@ for ($province_index = 0; $province_index < count($provinceMatches[0]); $provinc
 while (count($queue) > 0) {
     $item = array_shift($queue);
 
+    $now = date('Y-m-d H:i:s');
+    echo "[{$now}] Took one from queue [{$item['address']}] and seek children, " . count($queue) . " left...";
+
     $elementMatches = parseNextLevelElementsInPage($item['url']);
     for ($elementIndex = 0; $elementIndex < count($elementMatches[0]); $elementIndex++) {
         $elementType = $elementMatches[1][$elementIndex];
@@ -72,7 +79,7 @@ while (count($queue) > 0) {
 
         //echo "{$elementType} Index: ".$elementIndex.PHP_EOL;
         //echo "{$elementType} Code: ".$elementCode.PHP_EOL;
-        //echo "{$elementType} Name: ".$elementName.PHP_EOL;
+//        echo "{$elementType} Name: ".$elementName.PHP_EOL;
         //echo "Parent: ".$item['code'].PHP_EOL;
 
         if (!empty($elementMatches[2][$elementIndex])) {
@@ -92,6 +99,7 @@ while (count($queue) > 0) {
 //            'region_type'=>$elementType,
 //        ];
         confirmRegionItem($elementCode, $item['code'], $elementName, $elementType, $elementAddress);
+        echo "done" . PHP_EOL;
     }
 }
 
@@ -103,13 +111,17 @@ while (count($queue) > 0) {
 
 function confirmRegionItem($region_code, $parent_code, $region_name, $region_type, $region_address)
 {
+    $file = __DIR__ . '/../log/region.sql';
+
     $sql = "insert into region(region_id,parent_id,region_name,region_type) "
         . "values ('{$region_code}','{$parent_code}','{$region_name}','{$region_type}'); "
         . " -- {$region_address}";
-    echo $sql . PHP_EOL;
+    //echo $sql . PHP_EOL;
+
+    file_put_contents($file, $sql . PHP_EOL, FILE_APPEND);
 }
 
-function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8')
+function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8//IGNORE')
 {
     $html = '';
     for ($i = 0; $i < 5; $i++) {
@@ -118,6 +130,7 @@ function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8')
         if (!empty($html)) break;
         sleep(rand(1, 5));
     }
+    if (empty($html)) return '';
     $html = iconv($fromCharset, $toCharset, $html);
     return $html;
 }
