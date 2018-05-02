@@ -69,28 +69,29 @@ while (count($queue) > 0) {
     echo "[{$now}] Took one from queue [{$item['address']}] and seek children, " . count($queue) . " left...";
 
     $elementMatches = parseNextLevelElementsInPage($item['url']);
-    for ($elementIndex = 0; $elementIndex < count($elementMatches[0]); $elementIndex++) {
-        $elementType = $elementMatches[1][$elementIndex];
-        $elementSubURL = $item['url'] . '/../' . $elementMatches[2][$elementIndex];
-        $elementCode = $elementMatches[3][$elementIndex];
-        $elementName = $elementMatches[4][$elementIndex];
+    if ($elementMatches) {
+        for ($elementIndex = 0; $elementIndex < count($elementMatches[0]); $elementIndex++) {
+            $elementType = $elementMatches[1][$elementIndex];
+            $elementSubURL = $item['url'] . '/../' . $elementMatches[2][$elementIndex];
+            $elementCode = $elementMatches[3][$elementIndex];
+            $elementName = $elementMatches[4][$elementIndex];
 
-        $elementAddress = $item['address'] . $elementName;
+            $elementAddress = $item['address'] . $elementName;
 
-        //echo "{$elementType} Index: ".$elementIndex.PHP_EOL;
-        //echo "{$elementType} Code: ".$elementCode.PHP_EOL;
+            //echo "{$elementType} Index: ".$elementIndex.PHP_EOL;
+            //echo "{$elementType} Code: ".$elementCode.PHP_EOL;
 //        echo "{$elementType} Name: ".$elementName.PHP_EOL;
-        //echo "Parent: ".$item['code'].PHP_EOL;
+            //echo "Parent: ".$item['code'].PHP_EOL;
 
-        if (!empty($elementMatches[2][$elementIndex])) {
-            $queue_item = [
-                'url' => $elementSubURL,
-                'code' => $elementCode,
-                'type' => $elementType,
-                'address' => $elementAddress,
-            ];
-            array_unshift($queue, $queue_item);
-        }
+            if (!empty($elementMatches[2][$elementIndex])) {
+                $queue_item = [
+                    'url' => $elementSubURL,
+                    'code' => $elementCode,
+                    'type' => $elementType,
+                    'address' => $elementAddress,
+                ];
+                array_unshift($queue, $queue_item);
+            }
 
 //        $dict[$elementCode]=[
 //            'region_code'=>$elementCode,
@@ -98,9 +99,12 @@ while (count($queue) > 0) {
 //            'region_name'=>$elementName,
 //            'region_type'=>$elementType,
 //        ];
-        confirmRegionItem($elementCode, $item['code'], $elementName, $elementType, $elementAddress);
+            confirmRegionItem($elementCode, $item['code'], $elementName, $elementType, $elementAddress);
+        }
+        echo "done" . PHP_EOL;
+    } else {
+        echo "failed" . PHP_EOL;
     }
-    echo "done" . PHP_EOL;
 }
 
 //foreach ($dict as $code => $item){
@@ -151,7 +155,7 @@ function parseNextLevelElementsInPage($url)
             return $matches;
         } else {
             //echo "MATCHED EMPTY".PHP_EOL;
-            return [];
+            return false;
         }
     }
 }
