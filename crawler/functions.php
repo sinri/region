@@ -55,7 +55,9 @@ function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8//IGNORE')
         if (!empty($html)) break;
         sleep(rand(1, 5));
     }
-    if (empty($html)) return '';
+    if (empty($html)) {
+        return '';
+    }
     $html = iconv($fromCharset, $toCharset, $html);
     return $html;
 }
@@ -65,6 +67,10 @@ function parseNextLevelElementsInPage($url)
     $url = urlSimplify($url);
     //echo "READ URL: ".$url.PHP_EOL;
     $html = readPage($url);
+    if (empty($html)) {
+        echo "FAILED to loadurl: " . $url . PHP_EOL;
+        return false;
+    }
     if (preg_match_all('/<tr class=\'([a-z]+)tr\'><td><a href=\'([0-9a-z\.\/]+)\'>([^<]+)<\/a><\/td><td><a href=\'[0-9a-z\.\/]+\'>([^<]+)<\/a><\/td><\/tr>/', $html, $matches)) {
         //print_r($matches);
         //echo "MATCHED NODES".PHP_EOL;
