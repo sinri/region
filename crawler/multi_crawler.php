@@ -65,7 +65,10 @@ while (count($queue) > 0) {
 
             $elementAddress = $item['address'] . $elementName;
 
-            if (!empty($elementMatches[2][$elementIndex])) {
+            if (!empty($elementMatches[2][$elementIndex]) && in_array($elementType, [
+                    'country', 'province', 'city', 'county',
+                    // 'town','village',
+                ])) {
                 $queue_item = [
                     'url' => $elementSubURL,
                     'code' => $elementCode,
