@@ -10,6 +10,30 @@ function confirmRegionItem($region_code, $parent_code, $region_name, $region_typ
 {
     $file = __DIR__ . '/../log/region.' . getmypid() . '.sql';
 
+//    -- 第1～2位，为省级代码；
+//    -- 第3～4 位，为地级代码；
+//    -- 第5～6位，为县级代码；
+//    -- 第7～9位，为乡级代码；
+//    -- 第10～12位，为村级代码。
+
+    switch ($region_type) {
+        case 'province':
+            $region_code = substr($region_code, 0, 2);
+            break;
+        case 'city':
+            $region_code = substr($region_code, 0, 4);
+            break;
+        case 'county':
+            $region_code = substr($region_code, 0, 6);
+            break;
+        case 'town':
+            $region_code = substr($region_code, 0, 9);
+            break;
+        case 'village':
+            $region_code = substr($region_code, 0, 12);
+            break;
+    }
+
     $sql = "insert into region(region_id,parent_id,region_name,region_type) "
         . "values ('{$region_code}','{$parent_code}','{$region_name}','{$region_type}'); "
         . " -- {$region_address}";
