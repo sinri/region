@@ -50,7 +50,10 @@ function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8//IGNORE')
 {
     $html = '';
     for ($i = 0; $i < 5; $i++) {
-        $html = (new \sinri\ark\io\curl\ArkCurl())->prepareToRequestURL(\sinri\ark\io\ArkWebInput::METHOD_GET, $url)->execute();
+        $curl = (new \sinri\ark\io\curl\ArkCurl());
+        $curl->prepareToRequestURL(\sinri\ark\io\ArkWebInput::METHOD_GET, $url);
+        $curl->setCURLOption(CURLOPT_HEADER, 1);
+        $html = $curl->execute();
         //$html= file_get_contents($url);
         if (!empty($html)) break;
         sleep(rand(1, 5));
@@ -62,13 +65,13 @@ function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8//IGNORE')
     return $html;
 }
 
-function parseNextLevelElementsInPage($url)
+function parseNextLevelElementsInPage($url, &$error = 'no error')
 {
     $url = urlSimplify($url);
     //echo "READ URL: ".$url.PHP_EOL;
     $html = readPage($url);
     if (empty($html)) {
-        echo "FAILED to loadurl: " . $url . PHP_EOL;
+        $error = "URL GOT EMPTY: " . $url;
         return false;
     }
     if (preg_match_all('/<tr class=\'([a-z]+)tr\'><td><a href=\'([0-9a-z\.\/]+)\'>([^<]+)<\/a><\/td><td><a href=\'[0-9a-z\.\/]+\'>([^<]+)<\/a><\/td><\/tr>/', $html, $matches)) {
@@ -82,6 +85,7 @@ function parseNextLevelElementsInPage($url)
             return $matches;
         } else {
             //echo "MATCHED EMPTY".PHP_EOL;
+            $error = "STRANGE OUTPUT FOR: " . $url . PHP_EOL . '========' . PHP_EOL . $html . PHP_EOL . "========" . PHP_EOL;
             return false;
         }
     }

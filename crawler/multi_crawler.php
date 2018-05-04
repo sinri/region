@@ -55,7 +55,7 @@ while (count($queue) > 0) {
     $now = date('Y-m-d H:i:s');
     echo "[{$now}] [" . getmypid() . "] Took one from queue [{$item['address']}] and seek children, " . count($queue) . " left...";
 
-    $elementMatches = parseNextLevelElementsInPage($item['url']);
+    $elementMatches = parseNextLevelElementsInPage($item['url'], $parseError);
     if ($elementMatches) {
         for ($elementIndex = 0; $elementIndex < count($elementMatches[0]); $elementIndex++) {
             $elementType = $elementMatches[1][$elementIndex];
@@ -83,6 +83,7 @@ while (count($queue) > 0) {
         echo "done" . PHP_EOL;
     } else {
         echo "failed for URL: " . $item['url'] . PHP_EOL;
+        echo $parseError . PHP_EOL;
     }
 }
 
