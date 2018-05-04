@@ -49,7 +49,7 @@ function confirmRegionItem($region_code, $parent_code, $region_name, $region_typ
 function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8//IGNORE')
 {
     $html = '';
-    for ($i = 0; $i < 5; $i++) {
+    for ($i = 0; $i < 10; $i++) {
         $curl = (new \sinri\ark\io\curl\ArkCurl());
         $curl->prepareToRequestURL(\sinri\ark\io\ArkWebInput::METHOD_GET, $url);
         $curl->setCURLOption(CURLOPT_HEADER, 1);
@@ -66,7 +66,7 @@ function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8//IGNORE')
         }
 
         if (!empty($html)) break;
-        sleep(rand(1, 5));
+        sleep(rand(10, 30));
     }
     if (empty($html)) {
         return '';
