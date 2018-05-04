@@ -55,6 +55,16 @@ function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8//IGNORE')
         $curl->setCURLOption(CURLOPT_HEADER, 1);
         $html = $curl->execute();
         //$html= file_get_contents($url);
+
+
+        // HTTP/1.1 503 Service Temporarily Unavailable
+        // HTTP/1.1 502 Proxy Error
+
+        if (strpos($html, 'HTTP/1.1 503 Service Temporarily Unavailable') !== false
+            || strpos($html, 'HTTP/1.1 502 Proxy Error')) {
+            $html = '';
+        }
+
         if (!empty($html)) break;
         sleep(rand(1, 5));
     }

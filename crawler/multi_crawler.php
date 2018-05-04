@@ -29,6 +29,7 @@ for ($province_index = 0; $province_index < count($provinceMatches[0]); $provinc
     $gotChildPid = pcntl_fork();
     if ($gotChildPid > 0) {
         //parent
+        $queue = [];
         continue;
     } else {
         //child
