@@ -22,7 +22,7 @@ preg_match_all('/<a href=\'([0-9]+).html\'>([^<]+)<br\/><\/a>/', $html, $provinc
 
 for ($province_index = 0; $province_index < count($provinceMatches[0]); $province_index++) {
 
-    $province_code = $provinceMatches[1][$province_index];
+    $province_code = truncateRegionIdByType($provinceMatches[1][$province_index], 'province');
     $cityPageURL = $baseUrl . $province_code . ".html";
     $province_name = $provinceMatches[2][$province_index];
 
@@ -60,7 +60,7 @@ while (count($queue) > 0) {
         for ($elementIndex = 0; $elementIndex < count($elementMatches[0]); $elementIndex++) {
             $elementType = $elementMatches[1][$elementIndex];
             $elementSubURL = $item['url'] . '/../' . $elementMatches[2][$elementIndex];
-            $elementCode = $elementMatches[3][$elementIndex];
+            $elementCode = truncateRegionIdByType($elementMatches[3][$elementIndex], $elementType);
             $elementName = $elementMatches[4][$elementIndex];
 
             $elementAddress = $item['address'] . $elementName;
