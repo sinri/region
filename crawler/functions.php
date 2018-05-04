@@ -66,6 +66,7 @@ function readPage($url, $fromCharset = 'GB2312', $toCharset = 'UTF-8//IGNORE')
         }
 
         if (!empty($html)) break;
+        echo "TAKE A SLEEP..." . PHP_EOL;
         sleep(rand(10, 30));
     }
     if (empty($html)) {
