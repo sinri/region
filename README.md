@@ -1,46 +1,45 @@
-# region
-淘宝四级地址库: 包括省、市、区/县、街道/镇
+# Region
 
-数据来源：中华人民共和国国家统计局
+数据来源： [2016年统计用区划代码和城乡划分代码(截止2016年07月31日)](http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/index.html)
 
-* 行政区划代码
-* 统计用区划和城乡划分代码
+## 统计用区划代码
 
-在上述基础数据上有所加工，为了和淘宝（菜鸟）四级地址库保持完全一致。
+一个十二位数字。
 
+* 第1～2位，为省级代码；
+* 第3～4位，为地级代码；
+* 第5～6位，为县级代码；
+* 第7～9位，为乡级代码；
+* 第10～12位，为村级代码。
 
-## 技术说明
+对于通常的电子商务等地址需求，不需要精确到村（据传淘宝和菜鸟也就四级），因此本数据里没有实现村级精度。
 
-1. 包含shell script一份region.sh，依赖mysql mysql-config-editor 工具，为了不再脚本中显示出现代码
+为了体现级别，超过该当级别的代码长度，尾部的零会被省略。
 
-> 参考文章：
-> http://dev.mysql.com/doc/refman/5.6/en/mysql-config-editor.html
-> http://stackoverflow.com/questions/20751352/suppress-warning-messages-using-mysql-from-within-terminal-but-password-written
+## 爬虫
 
-参考命令：请换成自己mysql目录
+如果你不放心或者啥的，可以自己爬一遍。
 
-```
-/usr/local/mysql/bin/mysql_config_editor set --login-path=client --host=127.0.0.1 --port=3306 --user=beta --password
-/usr/local/mysql/bin/mysql_config_editor print --all
-```
+需要 PHP 7 + composer 。需要建立可写的`log`目录。
 
-2. region.sql 一份，可以直接导入你的数据库
+如果支持 `PHP-PCNTL` 库，推荐使用 `crawler/multi_crawler.php` 来开31个子进程提高效率。不然只能等O(31)的时间效率了。
 
-```SQL
-CREATE TABLE `region` (
-    `region_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `parent_id` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '父区域id',
-    `region_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '区域名称',
-    `region_type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '区域类型，0-中国、1-省、2-市、3-区、4-街道',
-    PRIMARY KEY (`region_id`),
-    KEY `parent_id` (`parent_id`) USING BTREE,
-    KEY `region_type` (`region_type`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='region区域表';
-```
+运行
 
-3. 你的支持就是对我最大的鼓励(你们好好支持原作者)
-![image](https://github.com/zhuweijin/region/raw/master/donate.jpeg)
+```bash
+nohup php crawler/multi_crawler.php > log/nohup.log 2>&1 &
+``` 
 
+然后跑完坐等log里面收集31个sql文件。
 
-4. 因为阿里云的RDS会有不支持锁表的情况所以把LOCK去掉了。
+## SQL （MySQL Dialect）
+
+本版本的SQL导入在 `release/second` 目录下。首先导入表结构 `table.sql` 然后导入数据 `region.sql`。
+
+## About Patch
+
+如果出现了上下两级地区间隔空，例如广东某些市下面没有县（即地级下面直接就是乡级），所以为其补充了县级（代码为上级代码补零）。
+
+如果实际遇到了更新版本的地址需要，在爬虫无效的情况下。可以自己找区划变革数据，然后写INSERT之类的SQL。
+
 
