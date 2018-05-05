@@ -42,4 +42,10 @@ nohup php crawler/multi_crawler.php > log/nohup.log 2>&1 &
 
 如果实际遇到了更新版本的地址需要，在爬虫无效的情况下。可以自己找区划变革数据，然后写INSERT之类的SQL。
 
+## 原来的版本去哪里了
 
+之前伟晋做的神器还是可以在 wjzhu 分支里找到的。
+
+## Donation
+
+Wait.
