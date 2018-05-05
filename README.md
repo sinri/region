@@ -34,7 +34,7 @@ nohup php crawler/multi_crawler.php > log/nohup.log 2>&1 &
 
 ## SQL （MySQL Dialect）
 
-本版本的SQL导入在 `release/second` 目录下。首先导入表结构 `table.sql` 然后导入数据 `region.sql`。
+本版本的SQL导入在 `release/second` 目录下。首先导入[表结构](https://github.com/sinri/region/blob/master/release/second/table.sql) `table.sql` 然后导入数据 `region.sql`。
 
 ## About Patch
 
@@ -44,8 +44,10 @@ nohup php crawler/multi_crawler.php > log/nohup.log 2>&1 &
 
 ## 原来的版本去哪里了
 
-之前伟晋做的神器还是可以在 wjzhu 分支里找到的。
+之前伟晋做的神器还是可以在 [wjzhu](https://github.com/sinri/region/tree/wjzhu) 分支里找到的。
 
 ## Donation
 
-Wait.
+Through AliPay.
+
+![ALIPAY](https://raw.githubusercontent.com/sinri/region/master/AlipayUkanokan258.png)
